@@ -129,6 +129,32 @@ body{background:radial-gradient(ellipse at 15% 0%,rgba(255,91,31,.16),transparen
 #arun-intro .cinema-title{filter:drop-shadow(0 16px 14px rgba(0,0,0,.75));-webkit-text-stroke:1px rgba(255,255,255,.08)}
 #arun-portrait-reveal{filter:drop-shadow(0 0 32px rgba(255,99,48,.34))}
 @media(max-width:600px){#arun-intro .cinema-title{top:37%}}
+
+/* Keep the cinematic background typography clearly readable behind the portrait */
+#arun-intro .cinema-title{
+ z-index:2!important;
+ color:#f0e8df!important;
+ opacity:1!important;
+ -webkit-text-fill-color:#f0e8df;
+ text-shadow:
+  0 1px 0 #fff,
+  0 3px 0 #b7aaa0,
+  0 6px 0 #71645d,
+  0 10px 0 #382a24,
+  0 16px 28px rgba(0,0,0,.92),
+  0 0 18px rgba(255,132,78,.72),
+  0 0 52px rgba(255,91,35,.42)!important;
+ mix-blend-mode:screen;
+}
+#arun-intro .cinema-subtitle{
+ z-index:2!important;
+ color:rgba(255,224,205,.78)!important;
+ text-shadow:0 2px 12px rgba(255,103,51,.55),0 2px 8px #000;
+}
+#arun-intro .cinema-title{font-size:clamp(3.3rem,15vw,12rem)}
+@media(max-width:600px){
+ #arun-intro .cinema-title{font-size:16vw;letter-spacing:-.085em}
+}
 </style></head><body>
 <nav class="nav"><a class="brand" href="#home">Arun<span>.</span></a><button class="menu" id="menu" aria-label="Open navigation" aria-expanded="false">☰</button><div class="links" id="links"><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#services">For Students</a><a href="#projects">Examples</a><a href="#achievements">Achievements</a><a href="#learning">Learning</a><a href="#ai">Arun's AI</a><a href="#contact">Contact</a></div></nav>
 <main>
