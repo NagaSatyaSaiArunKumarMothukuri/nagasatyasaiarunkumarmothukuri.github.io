@@ -44,10 +44,12 @@ body{background:radial-gradient(ellipse at 15% 0%,rgba(255,91,31,.16),transparen
 @media(prefers-reduced-motion:reduce){#arun-intro:before,#arun-intro *{animation:none!important;transition:none!important}}
 
 
-/* Fix: keep both intro actions in the visible bottom action row; override legacy global intro button positioning */
-#arun-intro .intro-actions{position:absolute!important;left:0;right:0;bottom:max(28px,env(safe-area-inset-bottom))!important;top:auto!important;z-index:20!important;display:flex!important;align-items:center;justify-content:center;gap:12px;width:100%;padding:0 18px;box-sizing:border-box}
-#arun-intro .intro-actions .intro-btn{position:relative!important;top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;display:inline-flex!important;align-items:center;justify-content:center;min-height:48px;max-width:100%;white-space:nowrap;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
-@media(max-width:600px){#arun-intro .intro-actions{bottom:max(24px,env(safe-area-inset-bottom))!important;gap:9px;padding:0 12px}#arun-intro .intro-actions .intro-btn{font-size:11px;padding:13px 15px;min-height:46px}#arun-intro .intro-caption{top:64%}}
+/* iPhone browser-safe intro actions: stack both buttons above Safari controls */
+#arun-intro .intro-actions{position:fixed!important;left:0!important;right:0!important;top:auto!important;bottom:calc(150px + env(safe-area-inset-bottom))!important;z-index:10000!important;display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:center!important;gap:10px!important;width:100%!important;padding:0 20px!important;box-sizing:border-box!important;}
+#arun-intro .intro-actions .intro-btn{position:relative!important;inset:auto!important;display:flex!important;flex:0 0 auto!important;width:min(100%,310px)!important;min-height:48px!important;margin:0!important;padding:13px 16px!important;align-items:center!important;justify-content:center!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;white-space:nowrap!important;font-size:12px!important;}
+#arun-intro .intro-actions #reveal-arun-photo{order:1!important;}
+#arun-intro .intro-actions #check-arun-portfolio{order:2!important;}
+@media(max-height:720px){#arun-intro .intro-actions{bottom:calc(112px + env(safe-area-inset-bottom))!important;gap:7px!important}#arun-intro .intro-actions .intro-btn{min-height:42px!important;padding:10px 14px!important}}
 </style></head><body>
 <nav class="nav"><a class="brand" href="#home">Arun<span>.</span></a><button class="menu" id="menu" aria-label="Open navigation" aria-expanded="false">☰</button><div class="links" id="links"><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#services">For Students</a><a href="#projects">Examples</a><a href="#achievements">Achievements</a><a href="#learning">Learning</a><a href="#ai">Arun's AI</a><a href="#contact">Contact</a></div></nav>
 <main>
