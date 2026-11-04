@@ -112,6 +112,14 @@ a{color:#e8bd79}
  .intro-portrait{top:34%!important;width:70vw!important;height:51vh!important}
  .intro-caption{bottom:7%!important}
 }
+
+/* Hard override: title always sits above portrait; particles never remain over final photo */
+#intro .intro-word{position:absolute!important;display:flex!important;align-items:center!important;justify-content:center!important;top:22%!important;left:50%!important;right:auto!important;bottom:auto!important;transform:translateX(-50%)!important;width:100%!important;z-index:40!important;font-size:clamp(2.8rem,11.5vw,6.8rem)!important;letter-spacing:-.075em!important;line-height:1!important;white-space:nowrap!important;color:#efd39a!important;background:none!important;-webkit-text-fill-color:#efd39a!important;text-shadow:0 3px 0 #765525,0 8px 25px #000,0 0 18px #d5ad62!important;opacity:1!important}
+#intro #ember-canvas{position:absolute!important;top:34%!important;left:50%!important;transform:translateX(-50%)!important;width:88vw!important;height:51vh!important;z-index:20!important;opacity:1;visibility:visible;transition:opacity 1s ease,visibility 1s ease!important;pointer-events:none!important}
+#intro .intro-portrait{position:absolute!important;top:34%!important;left:50%!important;transform:translateX(-50%)!important;width:70vw!important;height:51vh!important;z-index:10!important;opacity:1!important;animation:none!important}
+#intro .intro-portrait img{width:100%!important;height:100%!important;object-fit:contain!important;opacity:0!important;transition:opacity 1.2s ease!important}
+#intro .intro-portrait img.photo-revealed{opacity:1!important}
+@media(max-width:600px){#intro .intro-word{top:22%!important;font-size:11.2vw!important}#intro #ember-canvas{top:34%!important;width:88vw!important;height:51vh!important}#intro .intro-portrait{top:34%!important;width:70vw!important;height:51vh!important}}
 </style>
 </head>
 <body>\n
@@ -178,8 +186,8 @@ a{color:#e8bd79}
   if(started||closed)return;started=true;setup();
   if(reduced){img.classList.add('photo-revealed');end();return}
   img.classList.remove('photo-revealed');t0=performance.now();frame=requestAnimationFrame(animate);
-  setTimeout(()=>{img.classList.add('photo-revealed');canvas.classList.add('particles-fade');},3300);
-  setTimeout(()=>{cancelAnimationFrame(frame);ctx.clearRect(0,0,W,H);},4700);
+  setTimeout(()=>{img.classList.add('photo-revealed');canvas.style.setProperty('opacity','0','important');canvas.style.setProperty('visibility','hidden','important');},3300);
+  setTimeout(()=>{cancelAnimationFrame(frame);ctx.clearRect(0,0,W,H);canvas.style.setProperty('display','none','important');},4700);
   setTimeout(end,8500);
  }
  // Start independently of image loading so a slow/broken image cannot suppress the particle animation.
