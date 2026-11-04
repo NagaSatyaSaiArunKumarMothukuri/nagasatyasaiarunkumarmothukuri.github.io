@@ -90,6 +90,15 @@ a{color:#e8bd79}
 .intro-portrait img.photo-revealed{opacity:1!important}
 .intro-caption{color:#d8bd83!important}
 @media(max-width:600px){.intro-word{top:38%!important;font-size:12.5vw!important}#ember-canvas{top:23%!important;width:90vw!important;height:57vh!important}.intro-portrait{top:23%!important;width:72vw!important;height:57vh!important}}
+
+/* Make the particle animation unmistakably visible on mobile */
+#intro{background:radial-gradient(ellipse at center,#20170b 0%,#080705 70%,#020201 100%)!important}
+.intro-word{z-index:2!important;top:36%!important;color:#f0d49a!important;text-shadow:0 3px 0 #725321,0 8px 26px #000,0 0 20px #c99d4e!important}
+#ember-canvas{display:block!important;visibility:visible!important;opacity:1!important;position:absolute!important;z-index:5!important;top:20%!important;left:50%!important;transform:translateX(-50%)!important;width:min(78vw,470px)!important;height:min(64vh,560px)!important;pointer-events:none!important}
+.intro-portrait{z-index:4!important;top:20%!important;width:min(56vw,370px)!important;height:min(64vh,560px)!important;opacity:1!important;animation:none!important}
+.intro-portrait img{opacity:0!important;transition:opacity 1.4s ease!important;object-fit:contain!important}
+.intro-portrait img.photo-revealed{opacity:1!important}
+@media(max-width:600px){.intro-word{top:38%!important;font-size:12.5vw!important}#ember-canvas{top:22%!important;width:92vw!important;height:58vh!important}.intro-portrait{top:22%!important;width:74vw!important;height:58vh!important}}
 </style>
 </head>
 <body>\n
@@ -114,54 +123,55 @@ a{color:#e8bd79}
 </main><footer class="wrap"><span>© <span id="year"></span> Arun Kumar. Built with curiosity.</span><a href="#home">Back to top ↑</a></footer>
 <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 <script>
-(()=>{const root=document.getElementById('intro'),canvas=document.getElementById('ember-canvas'),ctx=canvas&&canvas.getContext('2d'),img=document.getElementById('intro-photo');if(!root||!canvas||!ctx||!img)return;
-let w=0,h=0,particles=[],raf=0,finished=false,startTime=0,photoTimer;
-const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function finish(){if(finished)return;finished=true;cancelAnimationFrame(raf);root.classList.add('done');setTimeout(()=>root.remove(),900)}
-document.getElementById('skip-intro')?.addEventListener('click',finish);
-function insidePerson(x,y){
- const head=((x-50)/10)**2+((y-22)/13)**2<1;
- const neck=x>44&&x<56&&y>33&&y<43;
- const torso=y>41&&y<91&&x>34&&x<66;
- const leftShoulder=y>40&&y<55&&x>23&&x<=40;
- const rightShoulder=y>40&&y<55&&x>=60&&x<78;
- const raisedArm=x>16&&x<36&&y>25&&y<49&&Math.abs((x-27)+(y-37)*.28)<8;
- const leftLeg=y>=88&&y<128&&x>35&&x<49;
- const rightLeg=y>=88&&y<128&&x>=50&&x<65;
- return head||neck||torso||leftShoulder||rightShoulder||raisedArm||leftLeg||rightLeg;
-}
-function resize(){
- const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);w=r.width;h=r.height;
- canvas.width=Math.max(1,w*d);canvas.height=Math.max(1,h*d);ctx.setTransform(d,0,0,d,0,0);particles=[];
- const scale=Math.min(w/100,h/130)*.92,ox=(w-100*scale)/2,oy=(h-130*scale)/2;
- for(let y=2;y<130;y+=1.15)for(let x=2;x<100;x+=1.15)if(insidePerson(x,y)){
-  particles.push({x:Math.random()*w,y:Math.random()*h,tx:ox+x*scale,ty:oy+y*scale,r:.65+Math.random()*1.55,p:Math.random()*6.28,a:.5+Math.random()*.5,orbit:3+Math.random()*9});
+(()=> {
+ const root=document.getElementById('intro'),canvas=document.getElementById('ember-canvas'),img=document.getElementById('intro-photo'),skip=document.getElementById('skip-intro');
+ if(!root||!canvas||!img)return;
+ const ctx=canvas.getContext('2d');if(!ctx)return;
+ let W=0,H=0,particles=[],frame=0,started=false,closed=false,t0=0;
+ const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+ function end(){if(closed)return;closed=true;cancelAnimationFrame(frame);root.classList.add('done');setTimeout(()=>root.remove(),850)}
+ skip?.addEventListener('click',end);
+ function silhouette(x,y){
+  const head=((x-50)/10.5)**2+((y-20)/12)**2<1;
+  const neck=x>44&&x<56&&y>30&&y<42;
+  const torso=x>34&&x<66&&y>40&&y<88;
+  const shoulders=y>39&&y<57&&((x>23&&x<40)||(x>60&&x<78));
+  const arm=x>15&&x<36&&y>25&&y<48&&Math.abs((x-27)+(y-36)*.25)<8;
+  const legs=y>=86&&y<129&&((x>35&&x<49)||(x>50&&x<65));
+  return head||neck||torso||shoulders||arm||legs;
  }
-}
-function draw(now){
- if(finished)return;const t=now-startTime,progress=Math.min(1,t/3300),ease=1-Math.pow(1-progress,3);
- ctx.clearRect(0,0,w,h);
- for(const q of particles){
-  const shimmer=Math.sin(t*.006+q.p),settle=1-progress;
-  const tx=q.tx+Math.cos(t*.0018+q.p)*q.orbit*settle,ty=q.ty+Math.sin(t*.0018+q.p)*q.orbit*settle;
-  q.x+=(tx-q.x)*(.025+ease*.12);q.y+=(ty-q.y)*(.025+ease*.12);
-  const pulse=.58+.42*(.5+.5*shimmer);
-  ctx.beginPath();ctx.fillStyle='rgba(242,202,123,'+(q.a*pulse)+')';ctx.shadowBlur=7+5*pulse;ctx.shadowColor='#e6bd70';ctx.arc(q.x,q.y,q.r*pulse,0,Math.PI*2);ctx.fill();
+ function setup(){
+  const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
+  W=Math.max(1,r.width);H=Math.max(1,r.height);canvas.width=Math.round(W*d);canvas.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);
+  particles=[];const scale=Math.min(W/100,H/130)*.94,ox=(W-100*scale)/2,oy=(H-130*scale)/2;
+  for(let y=2;y<130;y+=1.25)for(let x=2;x<100;x+=1.25)if(silhouette(x,y)){
+   particles.push({x:Math.random()*W,y:Math.random()*H,tx:ox+x*scale,ty:oy+y*scale,r:1+Math.random()*1.5,phase:Math.random()*6.28,alpha:.65+Math.random()*.35});
+  }
  }
- ctx.shadowBlur=0;
- if(t<8200)raf=requestAnimationFrame(draw);else finish();
-}
-function begin(){
- if(startTime||finished)return;resize();
- if(reduced){img.classList.add('photo-revealed');finish();return}
- startTime=performance.now();raf=requestAnimationFrame(draw);
- // Reveal the supplied portrait only after the gold particle silhouette has formed.
- photoTimer=setTimeout(()=>img.classList.add('photo-revealed'),3600);
- setTimeout(finish,9000);
-}
-img.addEventListener('load',begin,{once:true});img.addEventListener('error',()=>{resize();begin()},{once:true});
-if(img.complete&&img.naturalWidth>0)begin();else setTimeout(()=>{if(!startTime)begin()},1800);
-window.addEventListener('resize',()=>{if(!finished)resize()});
+ function animate(now){
+  if(closed)return;const elapsed=now-t0,p=Math.min(1,elapsed/3000),ease=1-Math.pow(1-p,3);
+  ctx.clearRect(0,0,W,H);
+  for(const q of particles){
+   const shimmer=.72+.28*Math.sin(elapsed*.007+q.phase),scatter=1-p;
+   q.x+=(q.tx+Math.sin(elapsed*.0015+q.phase)*12*scatter-q.x)*(.035+ease*.14);
+   q.y+=(q.ty+Math.cos(elapsed*.0015+q.phase)*12*scatter-q.y)*(.035+ease*.14);
+   ctx.beginPath();ctx.fillStyle='rgba(242,205,137,'+(q.alpha*shimmer)+')';ctx.shadowColor='#e8c47b';ctx.shadowBlur=12;
+   ctx.arc(q.x,q.y,q.r*shimmer,0,Math.PI*2);ctx.fill();
+  }
+  ctx.shadowBlur=0;
+  if(elapsed<7600)frame=requestAnimationFrame(animate);else end();
+ }
+ function start(){
+  if(started||closed)return;started=true;setup();
+  if(reduced){img.classList.add('photo-revealed');end();return}
+  img.classList.remove('photo-revealed');t0=performance.now();frame=requestAnimationFrame(animate);
+  setTimeout(()=>img.classList.add('photo-revealed'),3300);
+  setTimeout(end,8500);
+ }
+ // Start independently of image loading so a slow/broken image cannot suppress the particle animation.
+ if(img.complete&&img.naturalWidth>0)img.classList.add('photo-revealed');
+ setTimeout(()=>{start();},80);
+ window.addEventListener('resize',()=>{if(!closed){setup()}});
 })();
 </script>
 </body></html>
