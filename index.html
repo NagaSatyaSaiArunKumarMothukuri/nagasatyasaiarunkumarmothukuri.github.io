@@ -31,7 +31,7 @@
 </style>
 </head>
 <body>\n<div id="intro" aria-label="Portfolio introduction">
-  <div class="intro-word" aria-hidden="true">DEVELOPER</div>
+  <div class="intro-word" aria-label="Developer"><span>D</span><span>E</span><span>V</span><span>E</span><span>L</span><span>O</span><span>P</span><span>E</span><span>R</span></div>
   <canvas id="ember-canvas"></canvas>
   <div class="intro-portrait"><img id="intro-photo" src="assets/arun-portrait.jpg.PNG" alt="Arun Kumar"></div>
   <div class="intro-caption">PORTFOLIO&nbsp; / &nbsp;2026</div>
@@ -70,16 +70,33 @@ if(img){if(img.complete)begin();else img.addEventListener('load',begin,{once:tru
 setTimeout(()=>{if(!beginAt)begin()},500);
 window.addEventListener('resize',()=>{if(!done){build()}});
 })();
-</script></body></html/* Intro styling matched to the portfolio's midnight blue and teal palette */
-#intro{background:radial-gradient(ellipse at 50% 52%,#182538 0,#0b1019 58%,#070b12 100%)}
-.intro-word{top:16%;z-index:4;font-size:clamp(2.8rem,11vw,9rem);background:linear-gradient(100deg,#e8efff,#9fb5ff 48%,#73e2cf);background-clip:text;-webkit-background-clip:text;opacity:.96;text-shadow:0 12px 32px #0009}
-#ember-canvas{top:28%;z-index:2;width:min(54vw,390px);height:min(49vh,430px)}
-.intro-portrait{top:28%;z-index:3;width:min(42vw,300px);height:min(49vh,430px);filter:drop-shadow(0 0 28px #79dcca30)}
-.intro-portrait img{width:100%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:normal;border-radius:2px;box-shadow:0 18px 60px #0009}
-.intro-caption{position:absolute;bottom:8%;color:#9baecb;font-size:10px;letter-spacing:.32em}
-#skip-intro{border-color:#8ea7ff77;background:#101827;color:#e5edff}
-@media(max-width:600px){.intro-word{top:21%;font-size:13vw}#ember-canvas{top:33%;width:88vw;height:42vh}.intro-portrait{top:33%;width:68vw;height:42vh}.intro-caption{bottom:8%}}
-@media(max-height:650px){.intro-word{top:11%}#ember-canvas,.intro-portrait{top:25%;height:43vh}}
+</script></body></html/* Unified black-and-gold portfolio theme */
+:root{--bg:#080706;--panel:#15110c;--panel2:#1c160e;--text:#fff8eb;--muted:#b9aa91;--line:#594326;--accent:#d9ad58;--accent2:#f0ca7a;--gold:#e8bd79}
+body{background:radial-gradient(ellipse at 15% 0%,#382711 0,transparent 38rem),radial-gradient(ellipse at 95% 25%,#241b0d 0,transparent 30rem),var(--bg);color:var(--text)}
+.nav{background:#090704e8;border-color:#594326}
+.brand span,.eyebrow,.kicker,.project small{color:#e8bd79}
+.hero h1 span{background:linear-gradient(100deg,#fff2cf,#d8a94e,#fff0c4);color:transparent;background-clip:text}
+.profile,.card{background:linear-gradient(145deg,#241a0c,#100c07);border-color:#594326}
+.profile{box-shadow:0 30px 90px #0009}
+.btn.primary{background:linear-gradient(120deg,#bd8731,#f1d28a);color:#170f04;border:0}
+.btn{border-color:#594326}
+.chip,.skill{border-color:#594326;background:#d6a94b0c;color:#f1dfbd}
+.contactbox{background:linear-gradient(110deg,#302312,#171006);border-color:#594326}
+#intro{position:fixed;inset:0;z-index:9999;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:radial-gradient(ellipse at 50% 55%,#24190d 0,#0b0906 58%,#050403 100%);transition:opacity .9s ease,visibility .9s ease}
+#intro.done{opacity:0;visibility:hidden;pointer-events:none}
+.intro-word{position:absolute;top:12%;left:50%;transform:translateX(-50%);z-index:4;display:flex;gap:.015em;white-space:nowrap;font-size:clamp(2.7rem,10.8vw,8rem);font-weight:1000;letter-spacing:-.075em;line-height:1;color:transparent;background:linear-gradient(100deg,#fff0c6,#d5a34e 52%,#f8dfaa);background-clip:text;-webkit-background-clip:text;text-shadow:0 12px 32px #000b}
+.intro-word span{display:inline-block;opacity:0;transform:translateY(35px) rotateX(70deg);filter:blur(7px);animation:letterIn .65s cubic-bezier(.2,.8,.2,1) forwards}
+.intro-word span:nth-child(1){animation-delay:.15s}.intro-word span:nth-child(2){animation-delay:.28s}.intro-word span:nth-child(3){animation-delay:.41s}.intro-word span:nth-child(4){animation-delay:.54s}.intro-word span:nth-child(5){animation-delay:.67s}.intro-word span:nth-child(6){animation-delay:.8s}.intro-word span:nth-child(7){animation-delay:.93s}.intro-word span:nth-child(8){animation-delay:1.06s}.intro-word span:nth-child(9){animation-delay:1.19s}
+#ember-canvas{position:absolute;top:29%;left:50%;transform:translateX(-50%);width:min(54vw,390px);height:min(48vh,420px);z-index:2;pointer-events:none}
+.intro-portrait{position:absolute;top:29%;left:50%;transform:translateX(-50%) translateY(18px) scale(.97);z-index:3;width:min(42vw,300px);height:min(48vh,420px);margin:0;opacity:0;filter:drop-shadow(0 0 28px #e2a94c35);animation:photoReveal 1s 1.55s forwards}
+.intro-portrait img{width:100%;height:100%;object-fit:contain;object-position:center center;mix-blend-mode:normal;border-radius:2px;box-shadow:0 18px 60px #0009}
+.intro-caption{position:absolute;bottom:8%;color:#d2b77f;font-size:10px;letter-spacing:.32em}
+#skip-intro{position:absolute;right:20px;top:20px;z-index:8;border:1px solid #c9a45d77;border-radius:30px;padding:10px 14px;background:#100d08;color:#f5dfb4;font-size:11px;letter-spacing:.12em;cursor:pointer}
+@keyframes letterIn{to{opacity:1;transform:translateY(0) rotateX(0);filter:blur(0)}}
+@keyframes photoReveal{to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@media(max-width:600px){.intro-word{top:17%;font-size:10.5vw;letter-spacing:-.07em}#ember-canvas{top:32%;width:88vw;height:43vh}.intro-portrait{top:32%;width:68vw;height:43vh}.intro-caption{bottom:8%}}
+@media(max-height:650px){.intro-word{top:9%}#ember-canvas,.intro-portrait{top:24%;height:43vh}.intro-caption{bottom:5%}}
+@media(prefers-reduced-motion:reduce){.intro-word span{opacity:1;transform:none;filter:none;animation:none}#intro *{animation-duration:.01ms!important}}
 </style>
 </head>
 <body>\n<div id="intro" aria-label="Portfolio introduction">
