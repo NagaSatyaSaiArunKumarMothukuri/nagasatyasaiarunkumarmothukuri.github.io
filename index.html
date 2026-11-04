@@ -254,42 +254,41 @@ body{
  .card:hover{box-shadow:0 16px 42px rgba(0,0,0,.28),0 0 24px rgba(218,169,76,.055)!important}
 }
 
-/* FINAL INTRO COMPOSITION: moving title + portrait + name underneath */
+/* INTRO LAYOUT FIX — real marquee motion and clear name below portrait */
 #arun-intro .cinema-title{
- top:8%!important;
+ position:absolute!important;
+ top:7%!important;
  left:0!important;
  width:max-content!important;
- transform:none!important;
- animation:introTitleTravel 13s linear infinite!important;
- will-change:transform;
  z-index:6!important;
+ transform:translateX(105vw)!important;
+ animation:arunTitleMarquee 12s linear infinite!important;
+ will-change:transform;
 }
-@keyframes introTitleTravel{
- 0%{transform:translateX(105vw) scale(.82)!important;opacity:.15}
- 12%{opacity:1}
- 88%{opacity:1}
- 100%{transform:translateX(-115%) scale(.82)!important;opacity:.15}
+@keyframes arunTitleMarquee{
+ 0%{transform:translateX(105vw) scale(.82);opacity:.15}
+ 10%{opacity:1}
+ 90%{opacity:1}
+ 100%{transform:translateX(-115%) scale(.82);opacity:.15}
 }
 #arun-intro .cinema-caption{
- top:72%!important;
+ top:68%!important;
  bottom:auto!important;
- left:15px!important;right:15px!important;
+ left:12px!important;right:12px!important;
  z-index:8!important;
 }
 #arun-intro .cinema-caption strong{
- color:#fff4d8!important;
- font-size:clamp(2rem,7vw,3.5rem)!important;
- letter-spacing:.2em!important;
- text-shadow:0 4px 24px rgba(0,0,0,.9),0 0 24px rgba(218,169,76,.35)!important;
+ display:block!important;
+ color:#fff2cf!important;
+ font-size:clamp(2rem,7vw,3.2rem)!important;
+ letter-spacing:.22em!important;
+ text-shadow:0 4px 24px rgba(0,0,0,.95),0 0 22px rgba(218,169,76,.4)!important;
 }
 #arun-intro .cinema-caption small{color:#e8c77f!important}
 @media(max-width:600px){
  #arun-intro .cinema-title{top:7%!important;font-size:13vw!important}
- #arun-intro .cinema-caption{top:70%!important}
+ #arun-intro .cinema-caption{top:68%!important}
  #arun-intro .cinema-caption strong{font-size:2rem!important}
-}
-@media(prefers-reduced-motion:reduce){
- #arun-intro .cinema-title{animation:none!important;left:50%!important;top:8%!important;transform:translateX(-50%)!important}
 }
 </style></head><body>
 <nav class="nav"><a class="brand" href="#home">Arun<span>.</span></a><button class="menu" id="menu" aria-label="Open navigation" aria-expanded="false">☰</button><div class="links" id="links"><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#services">For Students</a><a href="#projects">Examples</a><a href="#achievements">Achievements</a><a href="#learning">Learning</a><a href="#ai">Arun's AI</a><a href="#contact">Contact</a></div></nav>
@@ -336,11 +335,12 @@ const messages=document.getElementById("messages"),input=document.getElementById
   pctx.setTransform(dpr,0,0,dpr,0,0);rctx.setTransform(dpr,0,0,dpr,0,0);
  }
  function portraitBox(){
-  const maxH=Math.min(h*.66,610),maxW=Math.min(w*.78,440);
+  // Keep the portrait in the upper-middle so the name has its own clear space below.
+  const maxH=Math.min(h*.55,540),maxW=Math.min(w*.72,400);
   const ratio=image.naturalWidth/image.naturalHeight;
   let height=maxH,width=height*ratio;
   if(width>maxW){width=maxW;height=width/ratio;}
-  return {x:(w-width)/2,y:h*.43-height/2,width,height};
+  return {x:(w-width)/2,y:h*.37-height/2,width,height};
  }
  // Build particles from the photograph's real pixel detail. Green outdoor foliage
  // is softly keyed away, leaving facial features, hair and clothing as the subject.
