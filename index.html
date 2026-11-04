@@ -34,7 +34,58 @@
   <div class="intro-word" aria-hidden="true">DEVELOPER</div>
   <canvas id="ember-canvas"></canvas>
   <div class="intro-portrait"><img id="intro-photo" src="assets/arun-portrait.jpg.PNG" alt="Arun Kumar"></div>
-  <div class="intro-name"><div class="name-track"><span>ARUN&nbsp; ✦ &nbsp;ARUN&nbsp; ✦ &nbsp;ARUN&nbsp; ✦ &nbsp;</span><span aria-hidden="true">ARUN&nbsp; ✦ &nbsp;ARUN&nbsp; ✦ &nbsp;ARUN&nbsp; ✦ &nbsp;</span></div></div>
+  <div class="intro-caption">PORTFOLIO&nbsp; / &nbsp;2026</div>
+  <button id="skip-intro" type="button">SKIP INTRO ↗</button>
+</div>
+<header class="nav"><div class="wrap navin"><a class="brand" href="#home">ARUN<span>.</span></a><nav class="links" aria-label="Main navigation"><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#journey">Journey</a><a href="#contact">Contact</a></nav></div></header>
+<main>
+<section class="hero wrap" id="home">
+<div><div class="eyebrow">CSBS Student · Aspiring Data Analyst</div><h1>Hi, I'm <span>Arun Kumar.</span></h1><p class="lead">I’m a third-year Computer Science and Business Systems student at SRKR Engineering College. I enjoy working with data, building useful digital experiences, and turning ideas into practical projects.</p><div class="actions"><a class="btn primary" href="#projects">Explore my work ↗</a><a class="btn" href="#contact">Get in touch</a><a class="btn" href="https://github.com/NagaSatyaSaiArunKumarMothukuri" target="_blank" rel="noreferrer">GitHub ↗</a></div><div class="chips"><span class="chip">Data Analytics</span><span class="chip">Python</span><span class="chip">Web Development</span><span class="chip">Problem Solving</span></div></div>
+<aside class="profile"><img class="portrait" src="assets/arun-portrait.jpg.PNG" alt="Portrait of Arun Kumar" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="portrait" style="display:none;place-items:center;color:#dce7ff;font-size:54px;font-weight:900">AK</div><div class="profile-note"><b>Mothukuri Naga Satya Sai Arun Kumar</b><span>SRKR Engineering College · Bhimavaram, Andhra Pradesh</span></div></aside>
+</section>
+<section id="about"><div class="wrap"><div class="kicker">A little about me</div><h2 class="heading">Curious mind. Practical builder.</h2><p class="sub">I’m pursuing Computer Science and Business Systems, with a growing interest in data analytics and software development. I like learning by building, collaborating with others, and improving my skills through hands-on work. My current focus is strengthening my analytical thinking, Python, SQL, Excel, and data visualisation skills.</p><div class="grid"><article class="card"><div class="icon">⌁</div><h3>Data-minded</h3><p>Interested in exploring datasets, finding patterns, and communicating insights clearly.</p></article><article class="card"><div class="icon">⌘</div><h3>Builder mindset</h3><p>Enjoy creating clean, accessible websites and learning how complete applications work.</p></article><article class="card"><div class="icon">↗</div><h3>Always learning</h3><p>Focused on practical projects, consistent improvement, and real-world experience.</p></article></div></div></section>
+<section id="skills"><div class="wrap"><div class="kicker">What I work with</div><h2 class="heading">Skills & tools</h2><p class="sub">A snapshot of the technologies and foundations I’ve worked with or am actively developing.</p><div class="skills"><span class="skill">Python</span><span class="skill">C</span><span class="skill">Java</span><span class="skill">SQL / DBMS</span><span class="skill">MS Excel</span><span class="skill">HTML</span><span class="skill">CSS</span><span class="skill">JavaScript</span><span class="skill">Frontend Development</span><span class="skill">Data Analytics</span><span class="skill">Power BI · Learning</span><span class="skill">Communication</span></div></div></section>
+<section id="projects"><div class="wrap"><div class="kicker">Selected work</div><h2 class="heading">Projects & explorations</h2><p class="sub">A few projects and ideas from my academic and independent learning journey.</p><div class="grid"><article class="card project"><small>01 · WEB DEVELOPMENT</small><h3>Blood Donor Around Me</h3><p>A web technology project concept designed to help people find nearby blood donors and make donor discovery easier during urgent situations.</p><div class="chips"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span></div></article><article class="card project"><small>02 · DATA & APPLICATIONS</small><h3>Smart QR Product Scanner</h3><p>An academic project idea exploring QR-based product information, customer access, payment options, and receipt generation.</p><div class="chips"><span class="chip">Python</span><span class="chip">ML concept</span><span class="chip">Web</span></div></article><article class="card project"><small>03 · LEARNING</small><h3>Data Analytics Practice</h3><p>Building foundations in data analysis through Python, Excel, SQL, datasets, visualisation, and hands-on lab exercises.</p><div class="chips"><span class="chip">Python</span><span class="chip">Excel</span><span class="chip">Analytics</span></div></article></div></div></section>
+<section id="journey"><div class="wrap"><div class="kicker">Education & highlights</div><h2 class="heading">My journey so far</h2><div class="timeline"><div class="item"><b>B.Tech · Computer Science and Business Systems</b><p>SRKR Engineering College, Bhimavaram · Currently in 3rd year</p></div><div class="item"><b>Campus Ambassador · Corizo</b><p>Part-time campus ambassador experience supporting a campus internship initiative.</p></div><div class="item"><b>Basketball achievements</b><p>Recognised in tournament competitions, including first- and third-place finishes in 2018.</p></div></div></div></section>
+<section id="contact"><div class="wrap"><div class="contactbox"><div><div class="kicker">Let's connect</div><h2 class="heading">Have an idea or opportunity?</h2><p class="sub">I’m open to connecting with people, learning from new experiences, and exploring internships or project collaborations.</p></div><div class="actions"><a class="btn primary" href="https://github.com/NagaSatyaSaiArunKumarMothukuri" target="_blank" rel="noreferrer">GitHub ↗</a><a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">Find me on LinkedIn ↗</a></div></div></div></section>
+</main><footer class="wrap"><span>© <span id="year"></span> Arun Kumar. Built with curiosity.</span><a href="#home">Back to top ↑</a></footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+
+<script>
+(()=>{const root=document.getElementById('intro'),canvas=document.getElementById('ember-canvas'),ctx=canvas&&canvas.getContext('2d'),img=document.getElementById('intro-photo');if(!root||!canvas||!ctx)return;
+let W=0,H=0,particles=[],raf=0,done=false;
+const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function finish(){if(done)return;done=true;root.classList.add('done');cancelAnimationFrame(raf);setTimeout(()=>{if(root.parentNode)root.remove()},1000)}
+document.getElementById('skip-intro')?.addEventListener('click',finish);
+function silhouette(x,y){const nx=(x-50)/50,ny=y/130;const head=(nx*nx/0.17)+(Math.pow((ny-.23)/.20,2))<1;const torso=(ny>.42&&ny<1.03&&Math.abs(nx)<(.18+Math.max(0,ny-.48)*.42));const shoulders=(ny>.42&&ny<.68&&Math.abs(nx)<.72*(1-Math.abs(ny-.53)*2));return head||torso||shoulders}
+function build(){const b=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=b.width||innerWidth*.8;H=b.height||innerHeight*.6;canvas.width=W*d;canvas.height=H*d;ctx.setTransform(d,0,0,d,0,0);particles=[];
+let sample=null;
+if(img&&img.complete&&img.naturalWidth){try{const c=document.createElement('canvas'),cx=c.getContext('2d');c.width=100;c.height=130;cx.drawImage(img,0,0,100,130);sample=cx.getImageData(0,0,100,130).data}catch(e){}}
+const scale=Math.min(W/100,H/130)*.88,ox=(W-100*scale)/2,oy=(H-130*scale)/2;
+for(let y=2;y<130;y+=2)for(let x=2;x<100;x+=2){const i=(y*100+x)*4,fromImage=sample&&sample[i+3]>60&&(sample[i]+sample[i+1]+sample[i+2])>75;if(fromImage||(!sample&&silhouette(x,y))){particles.push({tx:ox+x*scale,ty:oy+y*scale,x:Math.random()*W,y:Math.random()*H,r:.55+Math.random()*1.55,a:.3+Math.random()*.7,p:Math.random()*6.28});}}
+}
+function frame(t){if(done)return;ctx.clearRect(0,0,W,H);const progress=Math.min(1,t/2200),ease=1-Math.pow(1-progress,3);for(const q of particles){q.x+=(q.tx-q.x)*(.025+ease*.085);q.y+=(q.ty-q.y)*(.025+ease*.085);const f=.6+.4*Math.sin(t*.009+q.p);ctx.beginPath();ctx.fillStyle='rgba(255,'+(95+Math.floor(95*f))+','+(24+Math.floor(30*f))+','+(q.a*f)+')';ctx.shadowBlur=8;ctx.shadowColor='#ff6825';ctx.arc(q.x,q.y,q.r*f,0,Math.PI*2);ctx.fill()}ctx.shadowBlur=0;if(t<5200)raf=requestAnimationFrame(now=>frame(now-beginAt));else finish()}
+let beginAt=0;function begin(){if(done||beginAt)return;build();beginAt=performance.now();if(reduce){finish();return}raf=requestAnimationFrame(now=>frame(now-beginAt));setTimeout(finish,6500)}
+if(img){if(img.complete)begin();else img.addEventListener('load',begin,{once:true})}else begin();
+setTimeout(()=>{if(!beginAt)begin()},500);
+window.addEventListener('resize',()=>{if(!done){build()}});
+})();
+</script></body></html/* Intro styling matched to the portfolio's midnight blue and teal palette */
+#intro{background:radial-gradient(ellipse at 50% 52%,#182538 0,#0b1019 58%,#070b12 100%)}
+.intro-word{top:16%;z-index:4;font-size:clamp(2.8rem,11vw,9rem);background:linear-gradient(100deg,#e8efff,#9fb5ff 48%,#73e2cf);background-clip:text;-webkit-background-clip:text;opacity:.96;text-shadow:0 12px 32px #0009}
+#ember-canvas{top:28%;z-index:2;width:min(54vw,390px);height:min(49vh,430px)}
+.intro-portrait{top:28%;z-index:3;width:min(42vw,300px);height:min(49vh,430px);filter:drop-shadow(0 0 28px #79dcca30)}
+.intro-portrait img{width:100%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:normal;border-radius:2px;box-shadow:0 18px 60px #0009}
+.intro-caption{position:absolute;bottom:8%;color:#9baecb;font-size:10px;letter-spacing:.32em}
+#skip-intro{border-color:#8ea7ff77;background:#101827;color:#e5edff}
+@media(max-width:600px){.intro-word{top:21%;font-size:13vw}#ember-canvas{top:33%;width:88vw;height:42vh}.intro-portrait{top:33%;width:68vw;height:42vh}.intro-caption{bottom:8%}}
+@media(max-height:650px){.intro-word{top:11%}#ember-canvas,.intro-portrait{top:25%;height:43vh}}
+</style>
+</head>
+<body>\n<div id="intro" aria-label="Portfolio introduction">
+  <div class="intro-word" aria-hidden="true">DEVELOPER</div>
+  <canvas id="ember-canvas"></canvas>
+  <div class="intro-portrait"><img id="intro-photo" src="assets/arun-portrait.jpg.PNG" alt="Arun Kumar"></div>
   <div class="intro-caption">PORTFOLIO&nbsp; / &nbsp;2026</div>
   <button id="skip-intro" type="button">SKIP INTRO ↗</button>
 </div>
