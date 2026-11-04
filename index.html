@@ -329,7 +329,9 @@ const messages=document.getElementById("messages"),input=document.getElementById
  intro.addEventListener('pointerleave',()=>{pointer.x=0;pointer.y=0;});
  function dismiss(){cancelAnimationFrame(raf);intro.classList.add('cinema-exit');setTimeout(()=>intro.remove(),950);document.getElementById('home')?.scrollIntoView({behavior:'smooth'});}
  document.getElementById('check-arun-portfolio').addEventListener('click',dismiss);
- document.getElementById('skip-cinema').addEventListener('click',()=>{intro.classList.add('cinema-ready');done=true;drawPortrait(1);});
+ const skipButton=document.getElementById('skip-cinema');
+ skipButton.addEventListener('click',dismiss);
+ skipButton.addEventListener('touchend',e=>{e.preventDefault();dismiss();},{passive:false});
  document.getElementById('reveal-arun-photo').addEventListener('click',()=>photo.classList.add('open'));
  document.getElementById('close-arun-photo').addEventListener('click',()=>photo.classList.remove('open'));
  window.addEventListener('keydown',e=>{if(e.key==='Escape'){if(photo.classList.contains('open'))photo.classList.remove('open');else dismiss();}});
