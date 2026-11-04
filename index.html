@@ -205,7 +205,7 @@ const messages=document.getElementById("messages"),input=document.getElementById
  <div class="cinema-actions"><button class="cinema-btn secondary" id="reveal-arun-photo" type="button">REVEAL MY PHOTO <b>↗</b></button><button class="cinema-btn primary" id="check-arun-portfolio" type="button">CHECK MY PORTFOLIO <b>→</b></button></div>
  <button class="cinema-skip" id="skip-cinema" type="button" aria-label="Skip intro">SKIP INTRO ↗</button>
 </div>
-<div id="arun-photo-reveal" role="dialog" aria-modal="true" aria-label="Arun's photo"><div class="photo-card"><img id="arun-revealed-image" src="assets/arun-portrait.jpg" alt="Arun Kumar in a white checked shirt" loading="eager"><p>GOOD TO MEET YOU — I'M ARUN</p><button type="button" id="close-arun-photo">BACK TO INTRO</button></div></div>
+<div id="arun-photo-reveal" role="dialog" aria-modal="true" aria-label="Arun's photo"><div class="photo-card"><img id="arun-revealed-image" src="assets/arun-portrait.jpg.PNG" alt="Arun Kumar in a white checked shirt" loading="eager"><p>GOOD TO MEET YOU — I'M ARUN</p><button type="button" id="close-arun-photo">BACK TO INTRO</button></div></div>
 <script>
 (function(){
  const intro=document.getElementById('arun-intro');
@@ -214,7 +214,7 @@ const messages=document.getElementById("messages"),input=document.getElementById
  const pctx=particleCanvas.getContext('2d',{alpha:true});
  const rctx=portraitCanvas.getContext('2d',{alpha:true});
  const photo=document.getElementById('arun-photo-reveal');
- const image=new Image(); image.src='assets/arun-portrait.jpg';
+ const image=new Image(); image.src='assets/arun-portrait.jpg.PNG';
  let particles=[],raf=0,startTime=0,ready=false,done=false;
  let pointer={x:0,y:0},w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,1.7);
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
