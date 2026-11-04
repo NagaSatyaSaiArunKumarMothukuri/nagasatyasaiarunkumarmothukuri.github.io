@@ -123,6 +123,12 @@ body{background:radial-gradient(ellipse at 15% 0%,rgba(255,91,31,.16),transparen
 @keyframes photoCardIn{from{opacity:0;transform:translateY(25px) scale(.94)}to{opacity:1;transform:none}}
 @media(max-width:600px){#arun-intro .cinema-title{top:39%;font-size:17vw}#arun-intro .cinema-subtitle{top:47%;font-size:7px;letter-spacing:.25em}#arun-intro .cinema-caption{top:72%}#arun-intro .cinema-actions{bottom:calc(6% + env(safe-area-inset-bottom));flex-direction:column;align-items:center}#arun-intro .cinema-btn{width:min(100%,310px)}}
 @media(prefers-reduced-motion:reduce){#arun-intro:before,#arun-intro .cinema-title{animation:none!important}#arun-intro .cinema-actions,#arun-intro .cinema-caption{transition:none!important}}
+
+/* More photographic, depth-rich particle treatment */
+#arun-intro:after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.28),transparent 25%,transparent 72%,rgba(0,0,0,.55));mix-blend-mode:multiply}
+#arun-intro .cinema-title{filter:drop-shadow(0 16px 14px rgba(0,0,0,.75));-webkit-text-stroke:1px rgba(255,255,255,.08)}
+#arun-portrait-reveal{filter:drop-shadow(0 0 32px rgba(255,99,48,.34))}
+@media(max-width:600px){#arun-intro .cinema-title{top:37%}}
 </style></head><body>
 <nav class="nav"><a class="brand" href="#home">Arun<span>.</span></a><button class="menu" id="menu" aria-label="Open navigation" aria-expanded="false">☰</button><div class="links" id="links"><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#services">For Students</a><a href="#projects">Examples</a><a href="#achievements">Achievements</a><a href="#learning">Learning</a><a href="#ai">Arun's AI</a><a href="#contact">Contact</a></div></nav>
 <main>
@@ -168,60 +174,87 @@ const messages=document.getElementById("messages"),input=document.getElementById
   pctx.setTransform(dpr,0,0,dpr,0,0);rctx.setTransform(dpr,0,0,dpr,0,0);
  }
  function portraitBox(){
-  const ph=Math.min(h*.61,520),pw=ph*.75;
-  return {x:(w-pw)/2,y:h*.47-ph/2,width:pw,height:ph};
+  const maxH=Math.min(h*.66,610),maxW=Math.min(w*.78,440);
+  const ratio=image.naturalWidth/image.naturalHeight;
+  let height=maxH,width=height*ratio;
+  if(width>maxW){width=maxW;height=width/ratio;}
+  return {x:(w-width)/2,y:h*.43-height/2,width,height};
  }
+ // Build particles from the photograph's real pixel detail. Green outdoor foliage
+ // is softly keyed away, leaving facial features, hair and clothing as the subject.
  function makeParticles(){
   if(!image.complete||!image.naturalWidth)return;
-  const sw=360,sh=480,off=document.createElement('canvas');off.width=sw;off.height=sh;
-  const ox=off.getContext('2d',{willReadFrequently:true});ox.drawImage(image,0,0,sw,sh);
-  const data=ox.getImageData(0,0,sw,sh).data;
-  const mask=document.createElement('canvas');mask.width=sw;mask.height=sh;
-  const m=mask.getContext('2d');m.beginPath();
-  m.moveTo(118,8);m.lineTo(185,8);m.lineTo(220,42);m.lineTo(229,112);m.lineTo(257,151);m.lineTo(292,177);m.lineTo(307,238);m.lineTo(307,326);m.lineTo(300,410);m.lineTo(285,480);m.lineTo(128,480);m.lineTo(115,458);m.lineTo(75,434);m.lineTo(25,405);m.lineTo(8,384);m.lineTo(28,360);m.lineTo(39,290);m.lineTo(51,230);m.lineTo(75,193);m.lineTo(114,169);m.lineTo(106,120);m.lineTo(108,53);m.closePath();m.fill();
-  const maskData=m.getImageData(0,0,sw,sh).data,box=portraitBox();
+  const sw=260,sh=Math.round(sw*image.naturalHeight/image.naturalWidth);
+  const off=document.createElement('canvas');off.width=sw;off.height=sh;
+  const ox=off.getContext('2d',{willReadFrequently:true});
+  ox.drawImage(image,0,0,sw,sh);
+  const pixels=ox.getImageData(0,0,sw,sh).data,box=portraitBox();
   particles=[];
-  for(let y=0;y<sh;y+=3)for(let x=0;x<sw;x+=3){
-   const i=(y*sw+x)*4;if(maskData[i+3]<100)continue;
-   const rr=data[i],gg=data[i+1],bb=data[i+2];
-   const max=Math.max(rr,gg,bb),min=Math.min(rr,gg,bb),hue=(Math.atan2(Math.sqrt(3)*(gg-bb),2*rr-gg-bb)*180/Math.PI+360)%360;
-   if(hue>65&&hue<165&&max-min>24)continue;
-   if(y<160&&x<80)continue;
-   const lum=(rr*.3+gg*.59+bb*.11)/255;
+  const step=Math.max(2.5,Math.min(3.4,sw/90));
+  for(let y=0;y<sh;y+=step)for(let x=0;x<sw;x+=step){
+   const i=(Math.floor(y)*sw+Math.floor(x))*4,rr=pixels[i],gg=pixels[i+1],bb=pixels[i+2];
+   const max=Math.max(rr,gg,bb),min=Math.min(rr,gg,bb),sat=max?((max-min)/max):0;
+   const green=gg>rr*1.13&&gg>bb*1.08&&gg>62&&sat>.17;
+   // Keep a little of the green edge as a natural hair/shoulder rim.
+   const edgeGreen=green&&((x<sw*.1||x>sw*.9||y<sh*.08||y>sh*.94));
+   if(green&&!edgeGreen)continue;
    const tx=box.x+(x/sw)*box.width,ty=box.y+(y/sh)*box.height;
-   const warm=lum>.72?Math.random()*.28:Math.random()*.2;
-   const color='rgb('+Math.min(255,Math.round(rr*.56+255*warm))+','+Math.min(210,Math.round(gg*.35+75+warm*90))+','+Math.min(155,Math.round(bb*.24+28+warm*50))+')';
-   particles.push({tx,ty,x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*100,vy:(Math.random()-.5)*100,size:.65+Math.random()*1.3,color,phase:Math.random()*6.28,depth:.5+Math.random()});
+   const brightness=(rr*.299+gg*.587+bb*.114)/255;
+   const warm= Math.max(0,Math.min(1,(brightness-.28)*.45));
+   const color='rgb('+Math.min(255,Math.round(rr*.78+34*warm))+','+Math.min(245,Math.round(gg*.68+25*warm))+','+Math.min(230,Math.round(bb*.64+20*warm))+')';
+   particles.push({tx,ty,x:Math.random()*w,y:Math.random()*h,z:.25+Math.random()*.95,size:.55+Math.random()*.85,color,phase:Math.random()*Math.PI*2,seed:Math.random()});
   }
   ready=true;
  }
  function drawPortrait(alpha){
-  if(!ready)return;const box=portraitBox();
-  rctx.clearRect(0,0,w,h);rctx.save();rctx.globalAlpha=alpha;rctx.shadowColor='rgba(255,91,35,.55)';rctx.shadowBlur=26;
-  rctx.beginPath();rctx.moveTo(box.x+box.width*.33,box.y+box.height*.015);rctx.lineTo(box.x+box.width*.68,box.y+.015*box.height);rctx.lineTo(box.x+box.width*.82,box.y+box.height*.25);rctx.lineTo(box.x+box.width*.97,box.y+box.height*.39);rctx.lineTo(box.x+box.width*.96,box.y+box.height*.88);rctx.lineTo(box.x+box.width*.86,box.y+box.height);rctx.lineTo(box.x+box.width*.18,box.y+box.height);rctx.lineTo(box.x+box.width*.03,box.y+box.height*.82);rctx.lineTo(box.x+box.width*.1,box.y+box.height*.42);rctx.lineTo(box.x+box.width*.25,box.y+box.height*.29);rctx.closePath();rctx.clip();
-  rctx.drawImage(image,box.x,box.y,box.width,box.height);rctx.restore();
+  if(!ready)return;
+  const box=portraitBox();
+  rctx.clearRect(0,0,w,h);
+  rctx.save();rctx.globalAlpha=alpha;
+  // Soft cinematic matte: full original photograph, gently feathered at the edges.
+  const feather=document.createElement('canvas');feather.width=Math.ceil(box.width);feather.height=Math.ceil(box.height);
+  const f=feather.getContext('2d');
+  f.drawImage(image,0,0,feather.width,feather.height);
+  f.globalCompositeOperation='destination-in';
+  const grad=f.createRadialGradient(feather.width/2,feather.height/2,feather.height*.18,feather.width/2,feather.height/2,feather.height*.72);
+  grad.addColorStop(0,'rgba(255,255,255,1)');grad.addColorStop(.78,'rgba(255,255,255,.98)');grad.addColorStop(1,'rgba(255,255,255,0)');
+  f.fillStyle=grad;f.fillRect(0,0,feather.width,feather.height);
+  rctx.shadowColor='rgba(255,91,35,.32)';rctx.shadowBlur=24;
+  rctx.drawImage(feather,box.x,box.y,box.width,box.height);
+  rctx.restore();
  }
  function frame(now){
   if(!ready){raf=requestAnimationFrame(frame);return;}
-  const t=(now-startTime)/1000,formation=Math.min(1,Math.max(0,(t-.3)/3.2));const ease=formation*formation*(3-2*formation);
-  const reveal=Math.max(0,Math.min(1,(t-7.4)/2.1));const dissolve=Math.max(0,Math.min(1,(t-7.5)/1.7));
+  const t=(now-startTime)/1000;
+  const raw=Math.max(0,Math.min(1,(t-.25)/3.8));
+  const formation=raw*raw*(3-2*raw);
+  const dissolve=Math.max(0,Math.min(1,(t-7.25)/2.2));
   pctx.clearRect(0,0,w,h);
-  const px=pointer.x*11,py=pointer.y*11;
-  for(const p of particles){
-   const jitter=(1-ease)*Math.sin(t*2.3+p.phase)*15;
-   const drift=Math.sin(t*1.3+p.phase)*1.8;
-   const x=p.x+(p.tx-p.x)*ease+Math.cos(p.phase+t)*jitter+px*p.depth;
-   const y=p.y+(p.ty-p.y)*ease+Math.sin(p.phase+t)*jitter+py*p.depth;
-   const alpha=t<7.6?1:Math.max(0,1-dissolve);
-   pctx.globalAlpha=alpha*(.76+.24*Math.sin(t*3+p.phase));
-   pctx.fillStyle=p.color;pctx.shadowColor='rgba(255,92,34,.85)';pctx.shadowBlur=4;
-   pctx.beginPath();pctx.arc(x,y,p.size*(.8+.2*Math.sin(t*2+p.phase)),0,Math.PI*2);pctx.fill();
+  const px=pointer.x*18,py=pointer.y*18;
+  // Three depth planes create a more natural parallax and volumetric feel.
+  for(let layer=0;layer<3;layer++){
+   const depth=layer/2;
+   for(const p of particles){
+    const z=p.z;
+    const orbit=(1-formation)*(10+z*22);
+    const flutter=Math.sin(t*1.1+p.phase)*(.45+z*.9);
+    const x=p.x+(p.tx-p.x)*formation+Math.cos(p.phase+t*.7)*orbit+px*z+flutter;
+    const y=p.y+(p.ty-p.y)*formation+Math.sin(p.phase+t*.7)*orbit+py*z+flutter;
+    const alpha=t<7.35?1:Math.max(0,1-dissolve);
+    const size=p.size*(.7+z*.48);
+    pctx.globalAlpha=alpha*(.72+.28*Math.sin(t*2+p.phase));
+    pctx.fillStyle=p.color;
+    pctx.shadowColor=layer===2?'rgba(255,112,55,.8)':'rgba(255,89,38,.42)';
+    pctx.shadowBlur=layer===2?5:2;
+    pctx.beginPath();pctx.arc(x,y,size,0,Math.PI*2);pctx.fill();
+   }
   }
   pctx.shadowBlur=0;pctx.globalAlpha=1;
-  if(t>7.35)drawPortrait(reveal);
+  if(t>7.15)drawPortrait(Math.max(0,Math.min(1,(t-7.15)/2.5)));
   intro.style.setProperty('--parallax-x',px+'px');intro.style.setProperty('--parallax-y',py+'px');
-  if(t>9.35&&!done){done=true;intro.classList.add('cinema-ready');}
-  if(t<11.2){raf=requestAnimationFrame(frame);}else{pctx.clearRect(0,0,w,h);drawPortrait(1);}
+  if(t>9.55&&!done){done=true;intro.classList.add('cinema-ready');}
+  if(t<11.3){raf=requestAnimationFrame(frame);}
+  else{pctx.clearRect(0,0,w,h);drawPortrait(1);}
  }
  function begin(){
   sizeCanvases();makeParticles();startTime=performance.now();intro.classList.add('cinema-playing');
