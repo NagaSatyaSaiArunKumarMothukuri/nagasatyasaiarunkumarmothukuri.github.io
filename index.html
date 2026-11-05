@@ -154,6 +154,12 @@ a{color:#e8bd79}
 #contact .contact-details strong{color:var(--gold,#d7b36b);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
 #contact .contact-details a{color:inherit;text-decoration:none}
 #contact .contact-details a:hover{color:var(--gold,#d7b36b)}
+
+/* Replay intro control in the top-left navigation */
+.replay-intro{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;border:1px solid #806233;border-radius:999px;padding:8px 12px;background:linear-gradient(135deg,#21180b,#100d08);color:#e8c47b;font:600 11px/1 inherit;letter-spacing:.04em;cursor:pointer;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.replay-intro:hover{background:#33240e;border-color:#e8c47b;transform:translateY(-1px)}
+.replay-intro:focus-visible{outline:2px solid #e8c47b;outline-offset:3px}
+@media(max-width:600px){.replay-intro{padding:7px 9px;gap:5px}.replay-intro span{font-size:10px}.navin{gap:10px}}
 </style>
 </head>
 <body>\n
@@ -164,7 +170,7 @@ a{color:#e8bd79}
   <div class="intro-caption">PORTFOLIO&nbsp; / &nbsp;2026</div>
   <button id="skip-intro" type="button">SKIP INTRO ↗</button>
 </div>
-<header class="nav"><div class="wrap navin"><a class="brand" href="#home">ARUN<span>.</span></a><nav class="links" aria-label="Main navigation"><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#journey">Journey</a><a href="#contact">Contact</a></nav></div></header>
+<header class="nav"><div class="wrap navin"><button class="replay-intro" id="replay-intro" type="button" aria-label="Watch portfolio introduction again">↻ <span>Watch Intro</span></button><a class="brand" href="#home">ARUN<span>.</span></a><nav class="links" aria-label="Main navigation"><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#journey">Journey</a><a href="#contact">Contact</a></nav></div></header>
 <main>
 <section class="hero wrap" id="home">
 <div><div class="eyebrow">CSBS Student · Aspiring Data Analyst</div><h1>Hi, I'm <span>Arun Kumar.</span></h1><p class="lead">I’m a third-year Computer Science and Business Systems student at SRKR Engineering College. I enjoy working with data, building useful digital experiences, and turning ideas into practical projects.</p><div class="actions"><a class="btn primary" href="#projects">Explore my work ↗</a><a class="btn" href="#contact">Get in touch</a><a class="btn" href="https://github.com/NagaSatyaSaiArunKumarMothukuri" target="_blank" rel="noreferrer">GitHub ↗</a></div><div class="chips"><span class="chip">Data Analytics</span><span class="chip">Python</span><span class="chip">Web Development</span><span class="chip">Problem Solving</span></div></div>
@@ -264,5 +270,8 @@ a{color:#e8bd79}
  function add(text,who){const el=document.createElement('div');el.className='arun-chat-bubble '+who;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight}
  form.addEventListener('submit',e=>{e.preventDefault();const value=input.value.trim();if(!value)return;add(value,'user');input.value='';setTimeout(()=>add(reply(value),'bot'),350)});
 })();
+</script>
+<script>
+(()=>{const button=document.getElementById('replay-intro');if(!button)return;button.addEventListener('click',()=>{const url=new URL(window.location.href);url.searchParams.set('replayIntro',String(Date.now()));url.hash='';window.location.assign(url.toString());});})();
 </script>
 </body></html>
