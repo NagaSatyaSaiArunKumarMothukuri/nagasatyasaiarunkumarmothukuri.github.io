@@ -136,6 +136,17 @@ a{color:#e8bd79}
 #arun-chat-input{min-width:0;flex:1;border:1px solid #594326;border-radius:22px;padding:10px 13px;background:#080705;color:#fff1d5;outline:none;font-size:13px}
 #arun-chat-form button{width:40px;border:0;border-radius:50%;background:#d7b36b;color:#1b1206;font-size:18px;cursor:pointer}
 @media(max-width:480px){#arun-chat-panel{right:12px;bottom:86px;height:min(430px,62vh)}#arun-chat-launcher{right:16px;bottom:18px}}
+
+/* Full-screen photo-to-particles rotation and image reconstruction */
+#intro{overflow:hidden!important;background:radial-gradient(ellipse at center,#21180b 0%,#090704 68%,#020201 100%)!important}
+#intro .intro-word{z-index:40!important;top:12%!important;left:50%!important;transform:translateX(-50%)!important;width:100%!important;text-align:center!important;justify-content:center!important;color:#efd39a!important;-webkit-text-fill-color:#efd39a!important;white-space:nowrap!important}
+#intro #ember-canvas{position:absolute!important;inset:0!important;top:0!important;left:0!important;transform:none!important;width:100%!important;height:100%!important;z-index:25!important;display:block;visibility:visible;opacity:1;pointer-events:none!important}
+#intro .intro-portrait{z-index:10!important;top:29%!important;left:50%!important;transform:translateX(-50%)!important;width:min(62vw,390px)!important;height:56vh!important}
+#intro .intro-portrait img{width:100%!important;height:100%!important;object-fit:contain!important;opacity:0!important;transition:opacity 1.2s ease!important}
+#intro .intro-portrait img.photo-revealed{opacity:1!important}
+#intro .intro-caption{z-index:45!important}
+#intro #skip-intro{z-index:50!important}
+@media(max-width:600px){#intro .intro-word{top:15%!important;font-size:11.5vw!important}#intro .intro-portrait{top:29%!important;width:74vw!important;height:56vh!important}}
 </style>
 </head>
 <body>\n
@@ -162,54 +173,62 @@ a{color:#e8bd79}
 <script>
 (()=> {
  const root=document.getElementById('intro'),canvas=document.getElementById('ember-canvas'),img=document.getElementById('intro-photo'),skip=document.getElementById('skip-intro');
- if(!root||!canvas||!img)return;
- const ctx=canvas.getContext('2d');if(!ctx)return;
- let W=0,H=0,particles=[],frame=0,started=false,closed=false,t0=0;
+ if(!root||!canvas||!img)return;const ctx=canvas.getContext('2d');if(!ctx)return;
+ let W=0,H=0,parts=[],raf=0,started=false,closed=false,t0=0,ratio=1;
  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
- function end(){if(closed)return;closed=true;cancelAnimationFrame(frame);root.classList.add('done');setTimeout(()=>root.remove(),850)}
- skip?.addEventListener('click',end);
- function silhouette(x,y){
-  const head=((x-50)/10.5)**2+((y-20)/12)**2<1;
-  const neck=x>44&&x<56&&y>30&&y<42;
-  const torso=x>34&&x<66&&y>40&&y<88;
-  const shoulders=y>39&&y<57&&((x>23&&x<40)||(x>60&&x<78));
-  const arm=x>15&&x<36&&y>25&&y<48&&Math.abs((x-27)+(y-36)*.25)<8;
-  const legs=y>=86&&y<129&&((x>35&&x<49)||(x>50&&x<65));
-  return head||neck||torso||shoulders||arm||legs;
- }
+ function finish(){if(closed)return;closed=true;cancelAnimationFrame(raf);ctx.clearRect(0,0,W,H);root.classList.add('done');setTimeout(()=>root.remove(),850)}
+ skip?.addEventListener('click',finish);
  function setup(){
-  const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
-  W=Math.max(1,r.width);H=Math.max(1,r.height);canvas.width=Math.round(W*d);canvas.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);
-  particles=[];const scale=Math.min(W/100,H/130)*.94,ox=(W-100*scale)/2,oy=(H-130*scale)/2;
-  for(let y=2;y<130;y+=1.25)for(let x=2;x<100;x+=1.25)if(silhouette(x,y)){
-   particles.push({x:Math.random()*W,y:Math.random()*H,tx:ox+x*scale,ty:oy+y*scale,r:1+Math.random()*1.5,phase:Math.random()*6.28,alpha:.65+Math.random()*.35});
+  const d=Math.min(devicePixelRatio||1,1.5),r=root.getBoundingClientRect();ratio=d;W=r.width;H=r.height;
+  canvas.width=Math.max(1,Math.round(W*d));canvas.height=Math.max(1,Math.round(H*d));ctx.setTransform(d,0,0,d,0,0);
+  parts=[];
+  const ir=img.getBoundingClientRect(),rr=root.getBoundingClientRect();
+  const tw=Math.max(80,ir.width),th=Math.max(120,ir.height);
+  const off=document.createElement('canvas'),step=7;off.width=Math.max(1,Math.round(tw/step));off.height=Math.max(1,Math.round(th/step));
+  const o=off.getContext('2d',{willReadFrequently:true});o.drawImage(img,0,0,off.width,off.height);
+  const pixels=o.getImageData(0,0,off.width,off.height).data;
+  const left=ir.left-rr.left,top=ir.top-rr.top,sx=tw/off.width,sy=th/off.height;
+  for(let y=0;y<off.height;y++)for(let x=0;x<off.width;x++){
+   const k=(y*off.width+x)*4,a=pixels[k+3];if(a<90)continue;
+   const bright=(pixels[k]+pixels[k+1]+pixels[k+2])/3;if(bright<18)continue;
+   const tx=left+(x+.5)*sx,ty=top+(y+.5)*sy;
+   const angle=Math.random()*Math.PI*2,dist=Math.random()*Math.max(W,H)*.72;
+   parts.push({tx,ty,x:W/2+Math.cos(angle)*dist,y:H/2+Math.sin(angle)*dist,
+    r:1.05+Math.random()*1.05,color:'rgb('+pixels[k]+','+pixels[k+1]+','+pixels[k+2]+')',
+    gold:Math.random()<.18,phase:Math.random()*6.28});
   }
  }
- function animate(now){
-  if(closed)return;const elapsed=now-t0,p=Math.min(1,elapsed/3000),ease=1-Math.pow(1-p,3);
+ function draw(now){
+  if(closed)return;const t=now-t0,assemble=Math.max(0,Math.min(1,(t-1450)/3000)),ease=1-Math.pow(1-assemble,3);
   ctx.clearRect(0,0,W,H);
-  for(const q of particles){
-   const shimmer=.72+.28*Math.sin(elapsed*.007+q.phase),scatter=1-p;
-   q.x+=(q.tx+Math.sin(elapsed*.0015+q.phase)*12*scatter-q.x)*(.035+ease*.14);
-   q.y+=(q.ty+Math.cos(elapsed*.0015+q.phase)*12*scatter-q.y)*(.035+ease*.14);
-   ctx.beginPath();ctx.fillStyle='rgba(242,205,137,'+(q.alpha*shimmer)+')';ctx.shadowColor='#e8c47b';ctx.shadowBlur=12;
-   ctx.arc(q.x,q.y,q.r*shimmer,0,Math.PI*2);ctx.fill();
+  const spin=(1-assemble)*Math.PI*2.3;
+  for(const p of parts){
+   const dx=p.x-W/2,dy=p.y-H/2,angle=spin;
+   const rx=dx*Math.cos(angle)-dy*Math.sin(angle),ry=dx*Math.sin(angle)+dy*Math.cos(angle);
+   const swirlX=W/2+rx+Math.sin(t*.004+p.phase)*18*(1-assemble);
+   const swirlY=H/2+ry+Math.cos(t*.004+p.phase)*18*(1-assemble);
+   const drift=1-assemble;
+   const tx=p.tx+Math.sin(t*.002+p.phase)*2*drift,ty=p.ty+Math.cos(t*.002+p.phase)*2*drift;
+   const x=swirlX+(tx-swirlX)*ease,y=swirlY+(ty-swirlY)*ease;
+   const shimmer=.82+.18*Math.sin(t*.006+p.phase);
+   ctx.beginPath();ctx.fillStyle=p.gold?'rgba(238,199,123,'+shimmer+')':p.color;
+   ctx.shadowColor=p.gold?'#e8c47b':'transparent';ctx.shadowBlur=p.gold?5:0;
+   ctx.arc(x,y,p.r*shimmer,0,Math.PI*2);ctx.fill();
   }
   ctx.shadowBlur=0;
-  if(elapsed<4700)frame=requestAnimationFrame(animate);else {ctx.clearRect(0,0,W,H);}
+  // Fine gold links appear as the image locks into place.
+  if(assemble>.72){ctx.strokeStyle='rgba(220,180,103,'+((assemble-.72)*.25)+')';ctx.lineWidth=.45;for(let i=0;i<parts.length;i+=5){const p=parts[i],q=parts[i+1];if(q&&Math.hypot(p.tx-q.tx,p.ty-q.ty)<9){ctx.beginPath();ctx.moveTo(p.tx,p.ty);ctx.lineTo(q.tx,q.ty);ctx.stroke()}}}
+  if(t<6100)raf=requestAnimationFrame(draw);
+  else{ctx.clearRect(0,0,W,H);canvas.style.display='none';img.classList.add('photo-revealed');}
  }
  function start(){
-  if(started||closed)return;started=true;setup();
-  if(reduced){img.classList.add('photo-revealed');end();return}
-  img.classList.remove('photo-revealed');t0=performance.now();frame=requestAnimationFrame(animate);
-  setTimeout(()=>{img.classList.add('photo-revealed');canvas.style.setProperty('opacity','0','important');canvas.style.setProperty('visibility','hidden','important');},3300);
-  setTimeout(()=>{cancelAnimationFrame(frame);ctx.clearRect(0,0,W,H);canvas.style.setProperty('display','none','important');},4700);
-  setTimeout(end,8500);
+  if(started||closed)return;if(!img.complete||!img.naturalWidth){img.addEventListener('load',start,{once:true});return}
+  started=true;setup();if(reduced){img.classList.add('photo-revealed');finish();return}
+  img.classList.remove('photo-revealed');canvas.style.display='block';canvas.style.visibility='visible';canvas.style.opacity='1';
+  t0=performance.now();raf=requestAnimationFrame(draw);
+  setTimeout(()=>img.classList.add('photo-revealed'),5350);setTimeout(finish,8800);
  }
- // Start independently of image loading so a slow/broken image cannot suppress the particle animation.
- if(img.complete&&img.naturalWidth>0)img.classList.add('photo-revealed');
- setTimeout(()=>{start();},80);
- window.addEventListener('resize',()=>{if(!closed){setup()}});
+ setTimeout(start,100);window.addEventListener('resize',()=>{if(!closed&&started){setup()}});
 })();
 </script>
  
